@@ -1,25 +1,31 @@
 version: '3'
 services:
   www:
-    image: "nginx:${VERSION_NGINX}"
+    build:
+      context: ./nginx
+      args:
+        - "VERSION=${NGINX_VERSION}"
+        - "SITEPATH=${SITEPATH}"
     volumes:
       - "./config:/etc/nginx/conf.d"
-      - "./www:/usr/share/nginx/html"
+      - "./www:${SITEPATH}"
     depends_on:
       - db
       - php
     restart: unless-stopped
     ports:
-      - "${PORT_NGINX}:80"
+      - "${NGINX_PORT}:80"
   php:
-    image: "php:${VERSION_PHP}-fpm"
+    build:
+      context: ./phpfpm
+      args:
+        - "VERSION=${PHP_VERSION}"
     volumes:
-      - ./www:/scripts:ro
+      - "./www:${SITEPATH}"
   db:
-    image: "mariadb:${VERSION_MARIADB}"
+    image: "mariadb:${MYSQL_MARIADB_VERSION}"
     volumes:
-      - "./mysqldata:/var/lib/mysql"
-      - "./mysqlconfig:/etc/mysql/conf.d"
+      - "./mysql:/var/lib/mysql"
     restart: unless-stopped
     environment:
     - "MYSQL_DATABASE=${MYSQL_DBNAME}"
