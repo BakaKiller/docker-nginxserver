@@ -1,5 +1,6 @@
 ARG VERSION
 FROM nginx:${VERSION}
 
+ARG SITEPATH
 VOLUME ${SITEPATH}
 VOLUME /etc/nginx/conf.d
