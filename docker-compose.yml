@@ -1,0 +1,29 @@
+version: '3'
+services:
+  www:
+    image: "nginx:${VERSION_NGINX}"
+    volumes:
+      - "./config:/etc/nginx/conf.d"
+      - "./www:/usr/share/nginx/html"
+    depends_on:
+      - db
+      - php
+    restart: unless-stopped
+    ports:
+      - "${PORT_NGINX}:80"
+  php:
+    image: "php:${VERSION_PHP}-fpm"
+    volumes:
+      - ./www:/scripts:ro
+  db:
+    image: "mariadb:${VERSION_MARIADB}"
+    volumes:
+      - "./mysqldata:/var/lib/mysql"
+      - "./mysqlconfig:/etc/mysql/conf.d"
+    restart: unless-stopped
+    environment:
+    - "MYSQL_DATABASE=${MYSQL_DBNAME}"
+    - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOTPWD}"
+    - "MYSQL_USER=${MYSQL_USER}"
+    - "MYSQL_PASSWORD=${MYSQL_PWD}"
+
