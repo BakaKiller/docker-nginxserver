@@ -15,6 +15,7 @@ services:
     restart: unless-stopped
     ports:
       - "${NGINX_PORT}:80"
+    working_dir: "${SITEPATH}"
   php:
     build:
       context: ./phpfpm
@@ -22,6 +23,7 @@ services:
         - "VERSION=${PHP_VERSION}"
     volumes:
       - "./www:${SITEPATH}"
+    working_dir: "${SITEPATH}"
   db:
     image: "mariadb:${MYSQL_MARIADB_VERSION}"
     volumes:
