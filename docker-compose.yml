@@ -23,6 +23,9 @@ services:
         - "VERSION=${PHP_VERSION}"
     volumes:
       - "./www:${SITEPATH}"
+    restart: unless-stopped
+    depends_on:
+      - db
     working_dir: "${SITEPATH}"
   db:
     image: "mariadb:${MYSQL_MARIADB_VERSION}"
@@ -34,4 +37,10 @@ services:
     - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOTPWD}"
     - "MYSQL_USER=${MYSQL_USER}"
     - "MYSQL_PASSWORD=${MYSQL_PWD}"
-
+  pma:
+    image: phpmyadmin/phpmyadmin
+    environment:
+     - PMA_HOST=db
+    restart: unless-stopped
+    ports:
+     - ${PMA_PORT}:80
